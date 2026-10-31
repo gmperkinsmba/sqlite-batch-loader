@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Native macOS shell for BigDaddyDataDelegator."""
+"""Native macOS shell for SQLite Batch Loader."""
 from __future__ import annotations
 
 import os
@@ -49,14 +49,14 @@ def run() -> None:
             window.destroy()
 
     menu = [
-        Menu("BigDaddyDataDelegator", [MenuAction("Settings…", open_settings), MenuAction("Quit", quit_app)]),
+        Menu("SQLite Batch Loader", [MenuAction("Settings…", open_settings), MenuAction("Quit", quit_app)]),
         Menu("View", [MenuAction("Reload", reload_app)]),
     ]
     try:
         worker.start()
         wait_until_ready(url)
         window = webview.create_window(
-            "BigDaddyDataDelegator", url, width=1080, height=760, min_size=(800, 580), menu=menu
+            "SQLite Batch Loader", url, width=1080, height=760, min_size=(800, 580), menu=menu
         )
         install_policy(origin)
         webview.start()
@@ -74,8 +74,8 @@ if __name__ == "__main__":
         import AppKit
 
         alert = AppKit.NSAlert.alloc().init()
-        alert.setMessageText_("BigDaddyDataDelegator could not start")
-        alert.setInformativeText_("The local app failed to open. Restart BigDaddyDataDelegator and try again.")
+        alert.setMessageText_("SQLite Batch Loader could not start")
+        alert.setInformativeText_("The local app failed to open. Restart SQLite Batch Loader and try again.")
         alert.addButtonWithTitle_("OK")
         alert.runModal()
         raise SystemExit(1)

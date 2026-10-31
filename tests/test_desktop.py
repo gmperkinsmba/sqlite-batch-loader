@@ -32,7 +32,7 @@ class DesktopTests(unittest.TestCase):
             try:
                 with urlopen(base + "/", timeout=3) as response:
                     self.assertEqual(response.status, 200)
-                    self.assertIn(b"<h1>BigDaddyDataDelegator</h1>", response.read())
+                    self.assertIn(b"<h1>SQLite Batch Loader</h1>", response.read())
                 with urlopen(base + "/desktop.css", timeout=3) as response:
                     self.assertIn(b"32px", response.read())
                 for headers in ({"Host": "evil.test"}, {"Origin": "http://127.0.0.1:1"}, {"Origin": "http://["}):
