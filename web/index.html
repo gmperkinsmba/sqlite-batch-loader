@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0e12"><title>BigDaddyDataDelegator</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#overview" aria-label="BigDaddy Data Delegator home"><span class="mark" aria-hidden="true">BD</span><span>BIGDADDY<span class="brand-light">DATADELEGATOR</span></span></a>
+      <nav aria-label="Main navigation"><a class="nav-link selected" href="#overview">Pipeline</a><a class="nav-link" href="#receipts">Receipts</a><button id="settingsOpen" class="settings-button" aria-haspopup="dialog">Settings</button></nav>
+      <div class="local-state"><span class="pulse"></span><span>LOCAL ENGINE</span></div>
+    </header>
+
+    <main id="overview">
+      <section class="hero">
+        <div class="hero-copy"><div class="eyebrow"><span class="eyebrow-line"></span> SQLITE → DUCKDB / LOCAL</div>
+          <h1>BigDaddyDataDelegator</h1>
+          <p>Join data from two SQLite worker files in one stage and check its delivery to local DuckDB.</p>
+          <div class="hero-actions"><button class="primary" id="runDemo"><span>Run sample intake</span><span class="arrow" aria-hidden="true">↗</span></button><button class="secondary" id="recoveryDemo">Try recovery</button></div>
+          <p class="feedback" id="feedback" role="status" aria-live="polite">Ready for a local sample batch.</p>
+        </div>
+        <div class="flow-card" aria-label="Data flow from worker shards through canonical stage to DuckDB">
+          <div class="flow-head"><span>LIVE PATH</span><span class="flow-id">BD3 / 001</span></div>
+          <div class="flow"><div class="workers"><div class="node worker"><span class="node-dot"></span><div><b>Worker A</b><small>SQLite shard</small></div><span class="node-count" id="workerCountA">0</span></div><div class="node worker"><span class="node-dot"></span><div><b>Worker B</b><small>SQLite shard</small></div><span class="node-count" id="workerCountB">0</span></div></div>
+            <div class="wire"><span class="wire-track"></span><span class="wire-packet"></span><span class="wire-packet delay"></span></div>
+            <div class="node stage"><span class="stage-icon" aria-hidden="true">▤</span><div><b>Canonical stage</b><small>SQLite · one writer</small></div><span class="node-count" id="recordCount">0</span></div>
+            <div class="wire"><span class="wire-track"></span><span class="wire-packet"></span></div>
+            <div class="node sink"><span class="sink-icon" aria-hidden="true">D</span><div><b>DuckDB</b><small>verified destination</small></div><span class="sink-status" id="sinkStatus">WAITING</span></div>
+          </div>
+          <div class="flow-foot"><span><span class="mini-dot green"></span> <span id="queueCount">0 batches pending</span></span><span>WAL SNAPSHOTS</span></div>
+        </div>
+      </section>
+
+      <section class="metrics" aria-label="Pipeline summary">
+        <article class="metric"><div class="metric-label">INGESTED BATCHES <span>↗</span></div><div class="metric-value" id="batchMetric">00</div><div class="metric-note">Receipts committed to stage</div></article>
+        <article class="metric"><div class="metric-label">DOMAIN RECORDS <span>▤</span></div><div class="metric-value" id="recordsMetric">00</div><div class="metric-note">Latest version per string ID</div></article>
+        <article class="metric"><div class="metric-label">QUARANTINES <span>!</span></div><div class="metric-value" id="quarantineMetric">00</div><div class="metric-note">Invalid batches kept visible</div></article>
+        <article class="metric metric-accent"><div class="metric-label">DELIVERY LAG <span>⌁</span></div><div class="metric-value" id="lagMetric">00</div><div class="metric-note">Batches awaiting sink receipt</div></article>
+      </section>
+
+      <section class="lower" id="receipts">
+        <div class="section-title"><div><div class="eyebrow"><span class="eyebrow-line"></span> TRACE THE WORK</div><h2>Batch receipts</h2></div><button class="text-button" id="refresh">Refresh state <span aria-hidden="true">↻</span></button></div>
+        <div class="receipt-table-wrap"><table><thead><tr><th>BATCH</th><th>SOURCE</th><th>ACCEPTED</th><th>REPLAY / TOMBSTONE</th><th>STAGE RECEIPT</th><th>DELIVERY</th></tr></thead><tbody id="receiptRows"><tr class="empty"><td colspan="6">No batches yet. Run the sample intake to see a verified path.</td></tr></tbody></table></div>
+        <div class="data-note"><span class="note-icon" aria-hidden="true">i</span><span>Sample records are fabricated. The destination contains exact string IDs, decimal text mappings, null timestamps, and tombstones.</span></div>
+      </section>
+      <footer><span>BD3 · BOUNDED INTAKE ENGINE</span><span>SQLite stage <i>→</i> DuckDB sink</span></footer>
+    </main>
+  </div>
+
+  <dialog id="settingsDialog" aria-labelledby="settingsTitle"><form method="dialog" class="dialog-card" id="settingsForm"><button class="close" value="cancel" aria-label="Close settings">×</button><div class="eyebrow"><span class="eyebrow-line"></span> LOCAL CONFIGURATION</div><h2 id="settingsTitle">Settings</h2><p>Runtime data stays in your private local data folder. No cloud target is connected.</p><label for="destination">Destination adapter</label><select id="destination"><option value="duckdb">DuckDB · local file</option></select><div class="setting-path"><span>Runtime folder</span><code id="runtimePath">Private local folder</code></div><div class="setting-row"><span><b>DuckDB available</b><small id="duckdbAvailability">Checking local adapter</small></span><span class="config-badge" id="adapterBadge">LOCAL</span></div><div class="dialog-actions"><button class="secondary" value="cancel">Close</button><button class="primary" id="saveSettings" value="default">Save settings</button></div><div class="feedback" id="settingsFeedback" role="status"></div></form></dialog>
+  <script src="/app.js" defer></script>
+</body></html>
