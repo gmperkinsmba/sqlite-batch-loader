@@ -6,7 +6,24 @@ Two worker-owned SQLite shards publish each completed batch as a consistent snap
 
 This release supports only a local SQLite-to-DuckDB path. It does not support PostgreSQL, Supabase, Snowflake, Databricks, cloud storage, remote scheduling, or hosted ingestion. It makes no universal exactly-once claim. All demo records are fabricated.
 
-## Run
+**Install as a Mac app**
+
+Build this native app on macOS with Python 3.12. The build uses the pinned package list in `requirements-desktop.lock.txt`.
+
+```sh
+python3.12 -m venv .desktop-venv
+.desktop-venv/bin/python -m pip install -r requirements-desktop.lock.txt
+.desktop-venv/bin/python build_desktop.py
+.desktop-venv/bin/python install_desktop.py
+```
+
+The install step puts `BigDaddyDataDelegator.app` in `~/Applications`. Open it in Finder. Close its window or choose **Quit** to stop its local server. The app bundle includes Python. Its runtime data stays in `~/.local/share/bd3` unless you set `BD3_RUNTIME` before launch. Remove the app by moving it from `~/Applications` to Trash; this leaves runtime data in place.
+
+The bundle uses ad-hoc signing. It has no Developer ID signature and is not notarized. macOS may ask you to approve opening it. The native app builds on macOS only.
+
+To work on the native shell, activate `.desktop-venv` and run `.desktop-venv/bin/python desktop.py`.
+
+## Run in a browser
 
 Python 3.11 or newer is required. DuckDB 2.0.0 is the only runtime dependency. The version pin is in `requirements.txt`.
 

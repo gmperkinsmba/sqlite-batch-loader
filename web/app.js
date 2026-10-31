@@ -1,4 +1,5 @@
 let requestToken = "";
+if (new URLSearchParams(location.search).get("desktop") === "1") document.documentElement.classList.add("desktop-mode");
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 async function api(path, body) {
@@ -37,4 +38,5 @@ document.addEventListener("DOMContentLoaded", async()=>{
   const dlg=$("settingsDialog"); $("settingsOpen").addEventListener("click",()=>dlg.showModal());
   $("saveSettings").addEventListener("click",async(e)=>{e.preventDefault();try{await api("/api/settings",{destination:$('destination').value==="duckdb"?"destination.duckdb":null});$("settingsFeedback").textContent="Settings saved for this local run.";}catch(err){$("settingsFeedback").textContent=err.message;}});
   dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close();});
+  if(new URLSearchParams(location.search).get("desktop")==="1" && location.hash==="#settings") $("settingsOpen").click();
 });

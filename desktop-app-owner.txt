@@ -1,0 +1,3 @@
+BigDaddyDataDelegator desktop bundle
+io.github.gmperkinsmba.bigdaddy-data-delegator
+local-build-owner-marker-v1

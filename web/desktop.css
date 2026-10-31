@@ -1,0 +1,10 @@
+.desktop-mode .shell{max-width:1120px;padding-inline:28px}
+.desktop-mode .topbar{height:64px}
+.desktop-mode .hero{padding-top:28px;padding-bottom:20px;gap:24px}
+.desktop-mode .hero h1{font-size:32px;line-height:1.08}
+.desktop-mode .hero-copy>p:not(.feedback){font-size:13px;line-height:1.5;max-width:560px}
+.desktop-mode .flow-card{padding:18px}
+.desktop-mode .metrics{margin-top:8px}
+.desktop-mode .lower{padding-top:30px}
+.desktop-mode footer{margin-top:20px}
+@media(max-height:720px){.desktop-mode .hero{padding-top:16px;padding-bottom:12px}.desktop-mode .flow{padding-block:12px}.desktop-mode .lower{padding-top:18px}}

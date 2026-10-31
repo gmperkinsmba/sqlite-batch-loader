@@ -8,6 +8,7 @@ import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+import socketserver
 from urllib.parse import urlparse
 
 from .engine import BatchError, Pipeline
@@ -49,13 +50,16 @@ def make_handler(runtime: Path, token: str):
             self.wfile.write(body)
 
         def _valid_origin(self) -> bool:
-            host = self.headers.get("Host", "").split(":")[0].strip("[]")
-            if host not in ("127.0.0.1", "localhost", "::1"):
+            expected_host = f"127.0.0.1:{self.server.server_port}"
+            if self.headers.get("Host", "") != expected_host:
                 return False
             origin = self.headers.get("Origin")
             if origin:
-                parsed = urlparse(origin)
-                return parsed.hostname in ("127.0.0.1", "localhost", "::1") and parsed.netloc == self.headers.get("Host")
+                try:
+                    parsed = urlparse(origin)
+                except ValueError:
+                    return False
+                return parsed.scheme == "http" and parsed.hostname == "127.0.0.1" and parsed.netloc == expected_host and parsed.username is None and parsed.password is None
             return True
 
         def do_GET(self):
@@ -73,7 +77,7 @@ def make_handler(runtime: Path, token: str):
                 return self._json(200, {"token": token})
             if path == "/api/status":
                 return self._json(200, pipeline.status())
-            if path in ("/", "/index.html", "/app.js", "/style.css"):
+            if path in ("/", "/index.html", "/app.js", "/style.css", "/desktop.css"):
                 name = "index.html" if path in ("", "/", "/index.html") else path.lstrip("/")
                 data = (Path(__file__).parent.parent / "web" / name).read_bytes()
                 mime = "text/html" if name.endswith("html") else "text/javascript" if name.endswith("js") else "text/css"
@@ -141,15 +145,28 @@ def make_handler(runtime: Path, token: str):
     return Handler
 
 
-def serve(host: str = "127.0.0.1", port: int = 8331, runtime: str | Path | None = None):
-    if host not in ("127.0.0.1", "localhost"):
-        raise ValueError("Server must bind to loopback.")
+class LoopbackHTTPServer(ThreadingHTTPServer):
+    daemon_threads = True
+
+    def server_bind(self):
+        socketserver.TCPServer.server_bind(self)
+        self.server_name = "127.0.0.1"
+        self.server_port = self.socket.getsockname()[1]
+
+
+def make_server(runtime: str | Path | None = None, port: int = 0):
     root = Path(runtime or os.environ.get("BD3_RUNTIME", Path.home() / ".local/share/bd3"))
     root = root.expanduser().resolve()
     root.mkdir(parents=True, exist_ok=True, mode=0o700)
     os.chmod(root, 0o700)
-    server = ThreadingHTTPServer((host, port), make_handler(root, secrets.token_urlsafe(32)))
-    print(f"BigDaddyDataDelegator listening at http://{host}:{port}")
+    return LoopbackHTTPServer(("127.0.0.1", port), make_handler(root, secrets.token_urlsafe(32)))
+
+
+def serve(host: str = "127.0.0.1", port: int = 8331, runtime: str | Path | None = None):
+    if host != "127.0.0.1":
+        raise ValueError("Server must bind to 127.0.0.1.")
+    server = make_server(runtime, port)
+    print(f"BigDaddyDataDelegator listening at http://127.0.0.1:{server.server_port}")
     try:
         server.serve_forever()
     finally:
