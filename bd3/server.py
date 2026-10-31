@@ -166,7 +166,7 @@ def serve(host: str = "127.0.0.1", port: int = 8331, runtime: str | Path | None 
     if host != "127.0.0.1":
         raise ValueError("Server must bind to 127.0.0.1.")
     server = make_server(runtime, port)
-    print(f"BigDaddyDataDelegator listening at http://127.0.0.1:{server.server_port}")
+    print(f"SQLite Batch Loader listening at http://127.0.0.1:{server.server_port}")
     try:
         server.serve_forever()
     finally:

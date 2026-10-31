@@ -1,4 +1,4 @@
-# BigDaddyDataDelegator
+# SQLite Batch Loader
 
 **First principle:** Send bounded source batches to one verified dataset. Use receipts to resume safely after a stop.
 
@@ -17,7 +17,7 @@ python3.12 -m venv .desktop-venv
 .desktop-venv/bin/python install_desktop.py
 ```
 
-The install step puts `BigDaddyDataDelegator.app` in `~/Applications`. Open it in Finder. Close its window or choose **Quit** to stop its local server. The app bundle includes Python. Its runtime data stays in `~/.local/share/bd3` unless you set `BD3_RUNTIME` before launch. Remove the app by moving it from `~/Applications` to Trash; this leaves runtime data in place.
+The install step puts `SQLite Batch Loader.app` in `~/Applications`. Open it in Finder. Close its window or choose **Quit** to stop its local server. The app bundle includes Python. Its runtime data stays in `~/.local/share/bd3` unless you set `BD3_RUNTIME` before launch. Remove the app by moving it from `~/Applications` to Trash; this leaves runtime data in place.
 
 The bundle uses ad-hoc signing. It has no Developer ID signature and is not notarized. macOS may ask you to approve opening it. The native app builds on macOS only.
 
